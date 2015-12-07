@@ -39,6 +39,11 @@ function playGame(){
     ctx.drawImage(img, 0, 0, 4000, 4000);
     var dx = 0;
     var dy = 0;
+    
+    var wheight = ($(window).height())/2;
+    var wwidth = ($(window).width())/2; 
+    window.scrollTo(2000-wwidth+p1.x, 2000-wheight+p1.y);
+   
     if(mouseMove == true){
 
       if(p1.x > mousePos.x) dx = (-p1.x+mousePos.x)*0.08;
