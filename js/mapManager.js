@@ -53,8 +53,9 @@ function playGame(){
 
     }
 
-    checkcollision(p1.x + dx, p1.y + dy);
-
+    checkcollision(p1 , dx, dy);
+    console.log(dx); 
+    console.log(dy); 
 
     if(collision != 1){
       p1.x += dx;
@@ -91,8 +92,8 @@ function createPlayer(p){
   ctx.closePath();
 }
 
-function checkcollision(x, y) {
-  var imgd = ctx.getImageData(x, y, 50, 50);
+function checkcollision(p, x, y) {
+  var imgd = ctx.getImageData(p.x+x-50, p.y+y-50, 100, 100);
   var pix = imgd.data;
   for (var i = 0; n = pix.length, i < n; i += 4) {
   if (pix[i] == 0) {
