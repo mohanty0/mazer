@@ -121,38 +121,41 @@ function playGame(){
       var angle = (Math.atan2(lx, ly));
       lx = rad*Math.sin(angle);
       ly = rad*Math.cos(angle);
-
-    console.log(lx + "~~~~~~" + angle + "~~~~~" + ly)
     }
 
     p.sx = lx;
     p.sy = ly;
 
+    socket.emit('movement',{ pid: pnum, x: p.x, y: p.y, sx: p.sx, sy:p.sy});
 
-    //console.log('before emit before on');
-    socket.emit('movement',{ pid: pnum, x: p.x, y: p.y});
-    //console.log('after emit before on');
     socket.on('movement', function(data) {
-     // console.log('poop2');
-      //console.log(data);
+
       if(data.pid != pnum){
 
       switch (data.pid) {
         case 1:
           p1.x=data.x;
           p1.y=data.y;
+          p1.sx=data.sx;
+          p1.sy=data.sy;
           break;
         case 2: 
           p2.x=data.x;
           p2.y=data.y;
+          p2.sx=data.sx;
+          p2.sy=data.sy;
           break;
         case 3: 
           p3.x=data.x;
           p3.y=data.y;
+          p3.sx=data.sx;
+          p3.sy=data.sy;
           break;
         case 4: 
           p4.x=data.x;
           p4.y=data.y;
+          p4.sx=data.sx;
+          p4.sy=data.sy;
           break;
 
       }
