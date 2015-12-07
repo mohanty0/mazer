@@ -5,6 +5,9 @@ var p1 = new Ball(75,75, 0, 0, '#FF0000');
 var p2 = new Ball(3925,3925, 0, 0, '#00FF00');
 var p3 = new Ball(3925,75, 0, 0, '#0000FF');
 var p4 = new Ball(75,3925, 0, 0, '#FFFF00');
+//added
+var socket = io();
+// end added
 
 var mouseMove;
 var mousePos;
@@ -24,9 +27,28 @@ img.onload = function() {
   createPlayer(p4);
 };
 
-img.src = "images/gameboard.jpg";
+img.src = "/images/gameboard.jpg";
 
 function playGame(){
+  var p; 
+  console.log('poop');
+  socket.emit('register', 1);
+  socket.on('register' , function(pnum){
+    console.log(pnum);
+    switch (pnum) {
+      case 1:
+        p = p1; 
+        break; 
+      case 2: 
+        p = p2; 
+        break; 
+      case 3:
+        p = p3;
+        break; 
+      default: 
+        p = p4; 
+    }
+  });
   canvas.addEventListener('mousemove', function(event){
     mousePos = getMousePos(canvas, event);
     mouseMove = true;
@@ -42,36 +64,36 @@ function playGame(){
     
     var wheight = ($(window).height())/2;
     var wwidth = ($(window).width())/2; 
-    window.scrollTo(2000-wwidth+p1.x, 2000-wheight+p1.y);
+    window.scrollTo(2000-wwidth+p.x, 2000-wheight+p.y);
    
     if(mouseMove == true){
 
-      if(p1.x > mousePos.x) dx = (-p1.x+mousePos.x)*0.08;
-      else dx = (mousePos.x - p1.x)*0.08;
-      if(p1.y > mousePos.y) dy = (-p1.y+mousePos.y)*0.08;
-      else dy = (mousePos.y - p1.y)*0.08;
+      if(p.x > mousePos.x) dx = (-p.x+mousePos.x)*0.08;
+      else dx = (mousePos.x - p.x)*0.08;
+      if(p.y > mousePos.y) dy = (-p.y+mousePos.y)*0.08;
+      else dy = (mousePos.y - p.y)*0.08;
 
     }
 
-    checkcollision(p1 , dx, dy);
+    checkcollision(p , dx, dy);
    // console.log('poop');
     //console.log(dx); 
     //console.log(dy); 
 
     if(collision != 1){
-      p1.x += dx;
-      p1.y += dy;
+      p.x += dx;
+      p.y += dy;
     }else{
       collision = 0;
-      checkcollision(p1 , dx, 0);
+      checkcollision(p , dx, 0);
       if(collision != 1){
         //console.log('A');
-        p1.x += dx;
+        p.x += dx;
       }else{
         collision = 0;
-        checkcollision(p1 , 0, dy);
+        checkcollision(p , 0, dy);
         if(collision != 1){
-          p1.y += dy;
+          p.y += dy;
          // console.log('B');
         }
       }
