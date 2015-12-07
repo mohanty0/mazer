@@ -11,6 +11,8 @@ var p3 = 0;
 var p3sock; 
 var p4 = 0; 
 var p4sock; 
+var players = [0,0,0,0];
+var psocks = new Array(4);
 
 app.use("/js",express.static(__dirname + "/js"));
 app.use("/css",express.static(__dirname + "/css"));
@@ -25,46 +27,56 @@ io.on('connection', function(socket){
   //  io.emit('chat message', msg);
   //});
   socket.on('register', function(){
-  	if(p1==0) {
+  	
+    if(players[0]==0) {
       console.log('p1 joined the game');
-  		p1=1;
-  		p1sock= socket.id; 
-  		io.to(socket.id).emit('register' , 1);
-  	}
-  	else if(p2==0) {
+      players[0]=1;
+      psocks[0]= socket.id; 
+      io.to(socket.id).emit('register' , 1);
+    }
+    else if(players[1]==0) {
       console.log('p2 joined the game');
-  		p2=1;
-  		p2sock= socket.id; 
-  		io.to(socket.id).emit('register' , 2);
-  	}
-  	else if(p3==0) {
+      players[1]=1;
+      psocks[1]= socket.id; 
+      io.to(socket.id).emit('register' , 2);
+    }
+    else if(players[2]==0) {
       console.log('p3 joined the game');
-  		p3=1;
-		  p3sock= socket.id; 
-  		io.to(socket.id).emit('register' , 3);
-  	}
-  	else if(p4==0) {
+     players[2]=1;
+      psocks[2]= socket.id; 
+      io.to(socket.id).emit('register' , 3);
+    }
+    else if(players[3]==0) {
       console.log('p4 joined the game');
-  		p4=1;
-		  p4sock= socket.id; 
-  		io.to(socket.id).emit('register' , 4);
-  	}
+      players[3]=1;
+      psocks[3]= socket.id; 
+      io.to(socket.id).emit('register' , 4);
+    }
   });
+
   socket.on('movement', function(data){
   	io.emit('movement', data);
   });
+
+  socket.on('kill', function(data) {
+    //data should contain two fields pkld, and pklr
+    var pkilled = data.pkld-1; 
+    players[pkilled]=0; 
+    io.emit('kill', data);
+  });
+
   socket.on('disconnect', function(){
-    if(p1sock==socket.id) {
-      p1=0; 
+    if(psocks[0]==socket.id) {
+      players[0]=0; 
       console.log('p1 left the game');
-    } else if (p2sock==socket.id) {
-      p2=0; 
+    } else if (psocks[1]==socket.id) {
+      players[0]=1; 
       console.log('p2 left the game');
-    } else if (p3sock==socket.id) {
-      p3=0; 
+    } else if (psocks[2]==socket.id) {
+      players[0]=2; 
       console.log('p3 left the game');
-    } else if (p4sock==socket.id) {
-      p4=0; 
+    } else if (psocks[3]==socket.id) {
+      players[0]=3; 
       console.log('p4 left the game');
     }
   });
