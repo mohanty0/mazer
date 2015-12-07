@@ -160,6 +160,17 @@ function playGame(){
 
       }
     }
+     /* if (player shoots) {
+      //check kill 
+      if (kill) {
+        socket.emit('kill', {pkld: playerThatGotKilled, pklr : playerThatKilled}); 
+      }
+    }
+    socket.on('kill', function(data) {
+      //if data.pkld is self, end game 
+      // else remove which ever player it is. 
+    });
+    */
     });
     createPlayer(p1);
     createPlayer(p2);
