@@ -14,9 +14,6 @@ var currentCanvas;
 var img = new Image();
 
 img.onload = function() {
-    //ctx.clearRect(0, 0, 4000, 4000);
-
-
   ctx.drawImage(img, 0, 0, 4000, 4000);
   createPlayer(p1);
   createPlayer(p2);
@@ -55,13 +52,13 @@ function playGame(){
     }
 
     checkcollision(p1 , dx, dy);
+
     if(dx > maxx){
       dx = maxx;
     } 
     if(dy > maxx){
       dy = maxx;
     }
-    //console.log(dy); 
 
     if(collision != 1){
       p1.x += dx;
@@ -70,20 +67,14 @@ function playGame(){
       collision = 0;
       checkcollision(p1 , dx, 0);
       if(collision != 1){
-        console.log('A');
         p1.x += dx;
       }else{
         collision = 0;
         checkcollision(p1 , 0, dy);
         if(collision != 1){
           p1.y += dy;
-          console.log('B');
         }
       }
-      
-        
-
-
       collision = 0;
     }
 
@@ -119,7 +110,7 @@ function checkcollision(p, x, y) {
   var imgd = ctx.getImageData(p.x+x-50, p.y+y-50, 100, 100);
   var pix = imgd.data;
   for (var i = 0; n = pix.length, i < n; i += 4) {
-  if (pix[i] == 0) {
+  if (pix[i] == 0 || pix[i] == 1) {
   collision = 1;
 }
 }
