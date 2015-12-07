@@ -17,9 +17,6 @@ var currentCanvas;
 var img = new Image();
 
 img.onload = function() {
-    //ctx.clearRect(0, 0, 4000, 4000);
-
-
   ctx.drawImage(img, 0, 0, 4000, 4000);
   createPlayer(p1);
   createPlayer(p2);
@@ -53,14 +50,15 @@ function playGame(){
     mousePos = getMousePos(canvas, event);
     mouseMove = true;
   }, false);
-  
+  var dx = 0;
+  var dy = 0;
+  var maxx = 48;
 
   currentCanvas = setInterval(drawBoard, 10);
   
   function drawBoard(){
     ctx.drawImage(img, 0, 0, 4000, 4000);
-    var dx = 0;
-    var dy = 0;
+    
     
     var wheight = ($(window).height())/2;
     var wwidth = ($(window).width())/2; 
@@ -75,10 +73,15 @@ function playGame(){
 
     }
 
+
     checkcollision(p , dx, dy);
-   // console.log('poop');
-    //console.log(dx); 
-    //console.log(dy); 
+
+    if(dx > maxx){
+      dx = maxx;
+    } 
+    if(dy > maxx){
+      dy = maxx;
+    }
 
     if(collision != 1){
       p.x += dx;
@@ -87,20 +90,15 @@ function playGame(){
       collision = 0;
       checkcollision(p , dx, 0);
       if(collision != 1){
-        //console.log('A');
         p.x += dx;
-      }else{
+      } else{
         collision = 0;
         checkcollision(p , 0, dy);
         if(collision != 1){
           p.y += dy;
-         // console.log('B');
+
         }
       }
-      
-        
-
-
       collision = 0;
     }
 
@@ -108,7 +106,7 @@ function playGame(){
     createPlayer(p2);
     createPlayer(p3);
     createPlayer(p4);
-    //mouseMove = false;
+    mouseMove = false;
   }
 }
 
