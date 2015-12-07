@@ -26,32 +26,48 @@ io.on('connection', function(socket){
   //});
   socket.on('register', function(){
   	if(p1==0) {
+      console.log('p1 joined the game');
   		p1=1;
   		p1sock= socket.id; 
-  		io.to(p1sock).emit('register' , 1);
+  		io.to(socket.id).emit('register' , 1);
   	}
   	else if(p2==0) {
+      console.log('p2 joined the game');
   		p2=1;
   		p2sock= socket.id; 
-  		io.to(p2sock).emit('register' , 2);
+  		io.to(socket.id).emit('register' , 2);
   	}
   	else if(p3==0) {
+      console.log('p3 joined the game');
   		p3=1;
-		p3sock= socket.id; 
-  		io.to(p3sock).emit('register' , 3);
+		  p3sock= socket.id; 
+  		io.to(socket.id).emit('register' , 3);
   	}
   	else if(p4==0) {
+      console.log('p4 joined the game');
   		p4=1;
-		p4sock= socket.id; 
-  		io.to(p4sock).emit('register' , 4);
+		  p4sock= socket.id; 
+  		io.to(socket.id).emit('register' , 4);
   	}
   });
   socket.on('movement', function(data){
   	io.emit('movement', data);
   });
-  //socket.on('disconnect', function(){
-   // console.log('user disconnected');
-  //});
+  socket.on('disconnect', function(){
+    if(p1sock==socket.id) {
+      p1=0; 
+      console.log('p1 left the game');
+    } else if (p2sock==socket.id) {
+      p2=0; 
+      console.log('p2 left the game');
+    } else if (p3sock==socket.id) {
+      p3=0; 
+      console.log('p3 left the game');
+    } else if (p4sock==socket.id) {
+      p4=0; 
+      console.log('p4 left the game');
+    }
+  });
 });
 
 
