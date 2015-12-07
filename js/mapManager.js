@@ -128,11 +128,9 @@ function playGame(){
     var ly = rad*(dy/len);
 
     if(lx != rad && ly != rad){
-      var angle = (Math.atan2(lx, ly));//*(180/Math.PI);
-  
-      //if(angle > 100) console.log("~~~~~~~~~~~" + angle + "~~~~~~~~~");
-      lx = rad*Math.sin(angle);//360*2*Math.PI);
-      ly = rad*Math.cos(angle);//360*2*Math.PI);
+      var angle = (Math.atan2(lx, ly));
+      lx = rad*Math.sin(angle);
+      ly = rad*Math.cos(angle);
 
     console.log(lx + "~~~~~~" + angle + "~~~~~" + ly)
     }
