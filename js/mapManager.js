@@ -75,16 +75,6 @@ function playGame(){
       else dx = (mousePos.x - p.x)*0.08;
       if(p.y > mousePos.y) dy = (-p.y+mousePos.y)*0.08;
       else dy = (mousePos.y - p.y)*0.08;
-
-      /*var radX = mousePos.x - p.x;
-      var radY = mousePos.y - p.y;
-      var rad = Math.sqrt(Math.pow(radX, 2) + Math.pow(radY, 2));
-      var angle = (Math.atan2(radY, radX))*(180/Math.PI);
-  
-      //if(angle > 100) console.log("~~~~~~~~~~~" + angle + "~~~~~~~~~");
-      p.sx = mousePos.x + rad*Math.cos(angle);//360*2*Math.PI);
-      p.sy = mousePos.y + rad*Math.sin(angle);//360*2*Math.PI);
-*/
     }
 
 
