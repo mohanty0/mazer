@@ -62,6 +62,23 @@ function playGame(){
       p1.y += dy;
     }else{
       collision = 0;
+      checkcollision(p1 , dx, 0);
+      if(collision != 1){
+        console.log('A');
+        p1.x += dx;
+      }else{
+        collision = 0;
+        checkcollision(p1 , 0, dy);
+        if(collision != 1){
+          p1.y += dy;
+          console.log('B');
+        }
+      }
+      
+        
+
+
+      collision = 0;
     }
 
     createPlayer(p1);
