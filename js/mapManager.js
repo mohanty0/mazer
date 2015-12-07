@@ -1,10 +1,10 @@
 var canvas = document.getElementById('game');
 var ctx = game.getContext("2d");
 var pColor = 'black'
-var p1 = new Ball(75,75, 0, 0, '#FF0000');
-var p2 = new Ball(3925,3925, 0, 0, '#00FF00');
-var p3 = new Ball(3925,75, 0, 0, '#0000FF');
-var p4 = new Ball(75,3925, 0, 0, '#FFFF00');
+var p1 = new Ball(75,75, 0, 45, '#FF0000');
+var p2 = new Ball(3925,3925, 0, -45, '#00FF00');
+var p3 = new Ball(3925,75, -45, 0, '#0000FF');
+var p4 = new Ball(75,3925, 45, 0, '#FFFF00');
 var pnum;
 //added
 var socket = io();
@@ -55,7 +55,9 @@ function playGame(){
   }, false);
   var dx = 0;
   var dy = 0;
+
   var maxx = 48;
+
 
   currentCanvas = setInterval(drawBoard, 10);
   
@@ -74,6 +76,15 @@ function playGame(){
       if(p.y > mousePos.y) dy = (-p.y+mousePos.y)*0.08;
       else dy = (mousePos.y - p.y)*0.08;
 
+      /*var radX = mousePos.x - p.x;
+      var radY = mousePos.y - p.y;
+      var rad = Math.sqrt(Math.pow(radX, 2) + Math.pow(radY, 2));
+      var angle = (Math.atan2(radY, radX))*(180/Math.PI);
+  
+      //if(angle > 100) console.log("~~~~~~~~~~~" + angle + "~~~~~~~~~");
+      p.sx = mousePos.x + rad*Math.cos(angle);//360*2*Math.PI);
+      p.sy = mousePos.y + rad*Math.sin(angle);//360*2*Math.PI);
+*/
     }
 
 
@@ -102,8 +113,34 @@ function playGame(){
 
         }
       }
+
+      var len;
+      
+
+      //var tempY = mousePos.y - p.y;
+
       collision = 0;
     }
+    rad = 45;
+    len = Math.abs(dx)+ Math.abs(dy);
+
+    var lx = rad*(dx/len);
+    var ly = rad*(dy/len);
+
+    if(lx != rad && ly != rad){
+      var angle = (Math.atan2(lx, ly));//*(180/Math.PI);
+  
+      //if(angle > 100) console.log("~~~~~~~~~~~" + angle + "~~~~~~~~~");
+      lx = rad*Math.sin(angle);//360*2*Math.PI);
+      ly = rad*Math.cos(angle);//360*2*Math.PI);
+
+    console.log(lx + "~~~~~~" + angle + "~~~~~" + ly)
+    }
+
+    p.sx = lx;
+    p.sy = ly;
+
+
     //console.log('before emit before on');
     socket.emit('movement',{ pid: pnum, x: p.x, y: p.y});
     //console.log('after emit before on');
@@ -142,11 +179,11 @@ function playGame(){
 }
 
 
-function Ball(x, y, dx, dy, color) {
+function Ball(x, y, sx, sy, color) {
     this.x = x;
     this.y = y;
-    this.dx = dx;
-    this.dy = dy;
+    this.sx = sx;
+    this.sy = sy;
     this.color = color;
     this.origX = x;
     this.origY = y;
@@ -159,6 +196,24 @@ function createPlayer(p){
   ctx.fillStyle = p.color;
   ctx.fill();
   ctx.closePath();
+
+
+//var sx = mousePos.x + radFromMouse*Math.cos(angle/360*2*Math.PI);
+//var sy = mousePos.y + radFromMouse*Math.sin(angle/360*2*Math.PI);
+  
+
+  ctx.beginPath();
+
+
+
+  ctx.moveTo(p.x+p.sx, p.y +p.sy);
+  ctx.lineTo(p.x, p.y);
+  ctx.lineWidth = 10;
+  //ctx.strokeStyle = '#CCCACA';
+  ctx.strokeStyle = '#C6C6C6';
+  ctx.stroke();
+  ctx.closePath();
+  
 }
 
 function checkcollision(p, x, y) {
