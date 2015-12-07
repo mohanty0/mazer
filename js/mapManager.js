@@ -5,6 +5,7 @@ var p1 = new Ball(75,75, 0, 0, '#FF0000');
 var p2 = new Ball(3925,3925, 0, 0, '#00FF00');
 var p3 = new Ball(3925,75, 0, 0, '#0000FF');
 var p4 = new Ball(75,3925, 0, 0, '#FFFF00');
+var pnum;
 //added
 var socket = io();
 // end added
@@ -30,9 +31,10 @@ function playGame(){
   var p; 
   console.log('poop');
   socket.emit('register', 1);
-  socket.on('register' , function(pnum){
-    console.log(pnum);
-    switch (pnum) {
+  socket.on('register' , function(num){
+    pnum=num;
+    console.log(num);
+    switch (num) {
       case 1:
         p = p1; 
         break; 
@@ -46,6 +48,7 @@ function playGame(){
         p = p4; 
     }
   });
+  
   canvas.addEventListener('mousemove', function(event){
     mousePos = getMousePos(canvas, event);
     mouseMove = true;
@@ -101,7 +104,35 @@ function playGame(){
       }
       collision = 0;
     }
+    //console.log('before emit before on');
+    socket.emit('movement',{ pid: pnum, x: p.x, y: p.y});
+    //console.log('after emit before on');
+    socket.on('movement', function(data) {
+     // console.log('poop2');
+      //console.log(data);
+      if(data.pid != pnum){
 
+      switch (data.pid) {
+        case 1:
+          p1.x=data.x;
+          p1.y=data.y;
+          break;
+        case 2: 
+          p2.x=data.x;
+          p2.y=data.y;
+          break;
+        case 3: 
+          p3.x=data.x;
+          p3.y=data.y;
+          break;
+        case 4: 
+          p4.x=data.x;
+          p4.y=data.y;
+          break;
+
+      }
+    }
+    });
     createPlayer(p1);
     createPlayer(p2);
     createPlayer(p3);

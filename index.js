@@ -46,6 +46,12 @@ io.on('connection', function(socket){
   		io.to(p4sock).emit('register' , 4);
   	}
   });
+  socket.on('movement', function(data){
+  	io.emit('movement', data);
+  });
+  //socket.on('disconnect', function(){
+   // console.log('user disconnected');
+  //});
 });
 
 
