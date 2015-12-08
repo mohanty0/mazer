@@ -404,6 +404,9 @@ function hitPlayer(laser, startx, starty, endx, endy){
     if(laser.x < (p.x + p.radius) && (laser.x + laser.dx) > (p.x - p.radius)
           && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
       return i+1;
+    }else if(laser.y < (p.y + p.radius) && (laser.y + laser.dy) > (p.y - p.radius)
+          && laser.x-10 < (p.x + p.radius) && laser.x+10 > (p.x-p.radius)){
+      return i+1;
     }
   }
   }
