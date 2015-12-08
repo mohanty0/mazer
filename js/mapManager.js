@@ -60,7 +60,9 @@ function playGame(){
 
 canvas.addEventListener('mousedown', function(event){
     if(p.ammo > 0){
-      createLazer(p);
+      var ltemp = createLazer(p);
+      lazers.push(ltemp);
+      socket.emit('lazer', {lazer:ltemp});
       p.ammo--;
     }
   }, false);
@@ -173,6 +175,11 @@ canvas.addEventListener('mousedown', function(event){
 
       }
     }
+
+    socket.on('lazerAdd', function(data) {
+      if(data.lazer.playerNum != pnum)
+        lazers.push(data.lazer)
+    }
     //AYAYAYAY
      /* if (player shoots) {
       //check kill 
@@ -281,7 +288,7 @@ function drawLazer(lazr){
 
 function createLazer(p){
   var temp = new Lazer(p);
-  lazers.push(temp);
+  return temp;
 }
 
 function checkcollision(p, x, y) {

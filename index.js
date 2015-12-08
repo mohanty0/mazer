@@ -58,6 +58,10 @@ io.on('connection', function(socket){
   	io.emit('movement', data);
   });
 
+  socket.on('lazer', function(data){
+    io.emit('lazerAdd', data);
+  });
+
   socket.on('kill', function(data) {
     //data should contain two fields pkld, and pklr
     var pkilled = data.pkld-1; 
