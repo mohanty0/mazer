@@ -47,7 +47,6 @@ socket.on('kill', function(data) {
   if(data.pkld == pnum){
     clearInterval(currentCanvas);
   }else{
-    console.log("OKAYAYAYAYAYAYA");
     players.splice(data.pkld-1, 1);
   }
   // else remove which ever player it is. 
@@ -89,6 +88,7 @@ socket.on('movement', function(data) {
   });
 function playGame(){
   var p; 
+
   socket.emit('register', 1);
   socket.on('register' , function(num){
   pnum=num;
@@ -107,6 +107,21 @@ function playGame(){
       p = p4; 
     }
 });
+  //});
+
+  socket.on('allplayers', function(players){
+    console.log('poop');
+    if(players[0]==1) {
+        $("#redp").removeClass("fa-circle-thin").addClass("fa-circle");
+
+      }if (players[1]==1) {
+        $("#greenp").removeClass("fa-circle-thin").addClass("fa-circle");
+      } if (players[2]==1) {
+        $("#bluep").removeClass("fa-circle-thin").addClass("fa-circle");
+      } if (players[3]==1) {
+        $("#yellowp").removeClass("fa-circle-thin").addClass("fa-circle");
+      }
+  });
   
   canvas.addEventListener('mousemove', function(event){
     mousePos = getMousePos(canvas, event);
@@ -129,7 +144,7 @@ canvas.addEventListener('mousedown', function(event){
   var minn = -48;
 
 
-  currentCanvas = setInterval(drawBoard, 10);
+  currentCanvas = setInterval(drawBoard, 20);
   
   function drawBoard(){
     ctx.drawImage(img, 0, 0, 4000, 4000);

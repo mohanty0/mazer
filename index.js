@@ -26,24 +26,32 @@ io.on('connection', function(socket){
       players[0]=1;
       psocks[0]= socket.id; 
       io.to(socket.id).emit('register' , 1);
+      io.emit('newplayer',1);
+      io.emit('allplayers', players);
     }
     else if(players[1]==0) {
       console.log('p2 joined the game');
       players[1]=1;
       psocks[1]= socket.id; 
       io.to(socket.id).emit('register' , 2);
+      io.emit('newplayer',2);
+      io.emit('allplayers', players);
     }
     else if(players[2]==0) {
       console.log('p3 joined the game');
      players[2]=1;
       psocks[2]= socket.id; 
       io.to(socket.id).emit('register' , 3);
+      io.emit('newplayer',3);
+      io.emit('allplayers', players);
     }
     else if(players[3]==0) {
       console.log('p4 joined the game');
       players[3]=1;
       psocks[3]= socket.id; 
       io.to(socket.id).emit('register' , 4);
+      io.emit('newplayer',4);
+      io.emit('allplayers', players);
     }
   });
 
