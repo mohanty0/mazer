@@ -1,10 +1,13 @@
 var canvas = document.getElementById('game');
 var ctx = game.getContext("2d");
 var pColor = 'black'
-var p1 = new Ball(75,75, 0, 45, '#FF0000');
-var p2 = new Ball(3925,3925, 0, -45, '#00FF00');
-var p3 = new Ball(3925,75, -45, 0, '#0000FF');
-var p4 = new Ball(75,3925, 45, 0, '#FFFF00');
+var p1 = new Player(75,75, 0, 45, '#FF0000');
+var p2 = new Player(3925,3925, 0, -45, '#00FF00');
+var p3 = new Player(3925,75, -45, 0, '#0000FF');
+var p4 = new Player(75,3925, 45, 0, '#FFFF00');
+var lazers = [];
+
+
 var pnum;
 //added
 var socket = io();
@@ -13,6 +16,7 @@ var socket = io();
 var mouseMove;
 var mousePos;
 var collision = 0;
+var lazerHit = 0;
 
 var currentCanvas;
 var img = new Image();
@@ -53,10 +57,19 @@ function playGame(){
     mousePos = getMousePos(canvas, event);
     mouseMove = true;
   }, false);
+
+canvas.addEventListener('mousedown', function(event){
+    if(p.ammo > 0){
+      createLazer(p);
+      p.ammo--;
+    }
+  }, false);
+
   var dx = 0;
   var dy = 0;
 
   var maxx = 48;
+  var minn = -48
 
 
   currentCanvas = setInterval(drawBoard, 10);
@@ -82,9 +95,13 @@ function playGame(){
 
     if(dx > maxx){
       dx = maxx;
+    }else if(dx < minn){
+      dx = minn;
     } 
     if(dy > maxx){
       dy = maxx;
+    }else if(dy < minn){
+      dy = minn;
     }
 
     if(collision != 1){
@@ -105,10 +122,6 @@ function playGame(){
       }
 
       var len;
-      
-
-      //var tempY = mousePos.y - p.y;
-
       collision = 0;
     }
     rad = 45;
@@ -181,7 +194,7 @@ function playGame(){
 }
 
 
-function Ball(x, y, sx, sy, color) {
+function Player(x, y, sx, sy, color) {
     this.x = x;
     this.y = y;
     this.sx = sx;
@@ -190,6 +203,17 @@ function Ball(x, y, sx, sy, color) {
     this.origX = x;
     this.origY = y;
     this.radius = 50;
+    this.ammo = 99;
+}
+
+function Lazer(p){
+  
+  this.len = 30;
+  this.x = p.x+p.sx;
+  this.y = p.y+p.sy;
+  this.dx = p.sx;
+  this.dy = p.sy;
+  this.bounce = 1; 
 }
 
 function createPlayer(p){
@@ -199,33 +223,124 @@ function createPlayer(p){
   ctx.fill();
   ctx.closePath();
 
-
-//var sx = mousePos.x + radFromMouse*Math.cos(angle/360*2*Math.PI);
-//var sy = mousePos.y + radFromMouse*Math.sin(angle/360*2*Math.PI);
-  
-
   ctx.beginPath();
-
-
 
   ctx.moveTo(p.x+p.sx, p.y +p.sy);
   ctx.lineTo(p.x, p.y);
   ctx.lineWidth = 10;
-  //ctx.strokeStyle = '#CCCACA';
   ctx.strokeStyle = '#C6C6C6';
   ctx.stroke();
   ctx.closePath();
-  
+
+  for(var i = 0; i < lazers.length; i++){
+    
+
+    var lazr = lazers[i];
+    lazr.x += (lazr.dx);
+    lazr.y += (lazr.dy);
+    checkLazerCollision(lazr, lazr.x, lazr.y, lazr.x + lazr.dx, lazr.y + lazr.dy)
+    
+    if(lazr.x < 0 || lazr.y < 0 || lazr.x > 4000 || lazr.y > 4000)
+      lazerHit = 2;
+
+    switch(lazerHit){
+      case 1:
+        lazr.dx = -lazr.dx;
+        drawLazer(lazr);
+        break; 
+
+      case 2:
+        lazr.dy = -lazr.dy;
+        drawLazer(lazr);
+        break;
+      case 3:
+        lazers.splice(i, 1);
+        i--;
+        break;
+
+      default:
+        drawLazer(lazr);
+        break;  
+    }
+    lazerHit = 0;
+  }
+}
+
+function drawLazer(lazr){
+  ctx.beginPath();
+  ctx.moveTo(lazr.x, lazr.y);
+  ctx.lineTo(lazr.x + lazr.dx, lazr.y + lazr.dy);
+  ctx.lineWidth = 5;
+  ctx.strokeStyle='#FF00FF';
+  ctx.stroke();
+}
+
+function createLazer(p){
+  var temp = new Lazer(p);
+  lazers.push(temp);
 }
 
 function checkcollision(p, x, y) {
-  var imgd = ctx.getImageData(p.x+x-50, p.y+y-50, 100, 100);
+  var imgd = ctx.getImageData(p.x+x-40, p.y+y-40, 80, 80);
   var pix = imgd.data;
   for (var i = 0; n = pix.length, i < n; i += 4) {
-  if (pix[i] == 0 || pix[i] == 1) {
-  collision = 1;
+    if (pix[i] == 0 || pix[i] == 1) {
+      collision = 1;
+    }
+  }
+  /*console.log("here1");
+  for(var i = 0; i < 360; i++){
+    x = p.x+x + p.radius * Math.cos(i*(Math.PI/180));
+    y = p.y+y + p.radius * Math.sin(i*(Math.PI/180));
+    idx = (y * 4000 + x) * 4
+    console.log("check");
+    console.log(pix.length);
+
+    if (pix[idx] == 0 || pix[idx] == 1) {
+      collision = 1;
+      break;
+    }
+  }*/
 }
-}
+
+function checkLazerCollision(lazer, startx, starty, endx, endy) {
+  var minx = Math.min(startx, endx);
+  var miny = Math.min(starty, endy);
+  var maxx = Math.max(startx, endx);
+  var maxy = Math.max(starty, endy);
+  var w = Math.abs(startx - endx);
+  var h = Math.abs(starty - endy);
+  var imgd = ctx.getImageData(minx, maxy, w, 1);
+  var pix = imgd.data;
+  var imgd1 = ctx.getImageData(maxx, miny, 1, h);
+  var pix1 = imgd1.data;
+  for (var i = 0; n = pix.length, i < n; i += 4) {
+    if (pix[i] == 0 || pix[i] == 1) {
+      if(lazer.bounce == 0){
+        lazerHit = 3;
+        break;
+      }else{
+        lazerHit = 1;
+        lazer.bounce--;
+        break;
+      }
+    }
+  }
+  
+  if(lazerHit == 0){
+    for (var i = 0; n = pix1.length, i < n; i += 4) {
+    if (pix1[i] == 0 || pix1[i] == 1) {
+      if(lazer.bounce == 0){
+        lazerHit = 3;
+        break;
+      }else{
+        lazerHit = 2;
+        lazer.bounce--;
+        break;
+      }
+    }
+  }
+  }
 }
 
 
