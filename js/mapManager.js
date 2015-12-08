@@ -5,8 +5,13 @@ var p1 = new Player(75,75, 0, 45, '#FF0000');
 var p2 = new Player(3925,3925, 0, -45, '#00FF00');
 var p3 = new Player(3925,75, -45, 0, '#0000FF');
 var p4 = new Player(75,3925, 45, 0, '#FFFF00');
+var players = [];
+players.push(p1);
+players.push(p2);
+players.push(p3);
+players.push(p4);
 var lazers = [];
-
+console.log(players[0].x);
 
 var pnum;
 //added
@@ -33,7 +38,7 @@ img.src = "/images/gameboard.jpg";
 
 function playGame(){
   var p; 
-  //console.log('poop');
+
   socket.emit('register', 1);
   socket.on('register' , function(num){
     pnum=num;
@@ -159,6 +164,15 @@ canvas.addEventListener('mousedown', function(event){
       if(data.lazer.playerNum != pnum)
         lazers.push(data.lazer)
     });
+     socket.on('kill', function(data) {
+      //if data.pkld is self, end game
+      if(data.pkld == pnum){
+        clearInterval(currentCanvas);
+      }else{
+        players.splice(data.pkld-1, 1);
+      }
+      // else remove which ever player it is. 
+    });
     socket.emit('movement',{ pid: pnum, x: p.x, y: p.y, sx: p.sx, sy:p.sy});
 
     socket.on('movement', function(data) {
@@ -202,16 +216,12 @@ canvas.addEventListener('mousedown', function(event){
         socket.emit('kill', {pkld: playerThatGotKilled, pklr : playerThatKilled}); 
       }
     }
-    socket.on('kill', function(data) {
-      //if data.pkld is self, end game 
-      // else remove which ever player it is. 
-    });
+    
     */
     });
-    createPlayer(p1);
-    createPlayer(p2);
-    createPlayer(p3);
-    createPlayer(p4);
+    for(var i = 0; i < players.length; i++){
+      createPlayer(players[i]);
+    }
     updateLazers();
     mouseMove = false;
   }
@@ -264,7 +274,8 @@ function updateLazers(){
     var lazr = lazers[i];
     lazr.x += (lazr.dx);
     lazr.y += (lazr.dy);
-    checkLazerCollision(lazr, lazr.x, lazr.y, lazr.x + lazr.dx, lazr.y + lazr.dy)
+    var pidkill = -1;
+    pidkill = checkLazerCollision(lazr, lazr.x, lazr.y, lazr.x + lazr.dx, lazr.y + lazr.dy)
     
     if(lazr.x < 0 || lazr.y < 0 || lazr.x > 4000 || lazr.y > 4000)
       lazerHit = 2;
@@ -280,6 +291,11 @@ function updateLazers(){
         drawLazer(lazr);
         break;
       case 3:
+        lazers.splice(i, 1);
+        i--;
+        break;
+      case 4:
+        socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
         lazers.splice(i, 1);
         i--;
         break;
@@ -337,44 +353,63 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var w = Math.abs(startx - endx);
   var h = Math.abs(starty - endy);*/
 
+  var hitp;
 
-
-  var imgd = ctx.getImageData(endx-4, endy-4, 5, 5);
-  var pix = imgd.data;
-  /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
-  var pix1 = imgd1.data;*/
-  for (var i = 0; n = pix.length, i < n; i += 4) {
-    if (pix[i] == 0 || pix[i] == 1) {
-      lazerHit = 3;
-      break; 
-      /*if(lazer.bounce == 0){
+  hitp = hitPlayer(lazer, startx, starty, endx, endy);
+  if(hitp < 0){
+    var imgd = ctx.getImageData(endx-4, endy-4, 5, 5);
+    var pix = imgd.data;
+    /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
+    var pix1 = imgd1.data;*/
+    for (var i = 0; n = pix.length, i < n; i += 4) {
+      if (pix[i] == 0 || pix[i] == 1) {
         lazerHit = 3;
-        break;
-      }else{
-        lazerHit = 1;
-        lazer.bounce--;
-        break;
+        break; 
+        /*if(lazer.bounce == 0){
+          lazerHit = 3;
+          break;
+        }else{
+          lazerHit = 1;
+          lazer.bounce--;
+          break;
+        }
       }
     }
+    
+    if(lazerHit == 0){
+      for (var i = 0; n = pix1.length, i < n; i += 4) {
+      if (pix1[i] == 0 || pix1[i] == 1) {
+        if(lazer.bounce == 0){
+          lazerHit = 3;
+          break;
+        }else{
+          lazerHit = 2;
+          lazer.bounce--;
+          break;
+        }
+      }*/
+    }
+    }
+  }else{
+    lazerHit = 4;
   }
-  
-  if(lazerHit == 0){
-    for (var i = 0; n = pix1.length, i < n; i += 4) {
-    if (pix1[i] == 0 || pix1[i] == 1) {
-      if(lazer.bounce == 0){
-        lazerHit = 3;
-        break;
-      }else{
-        lazerHit = 2;
-        lazer.bounce--;
-        break;
-      }
-    }*/
-  }
-  }
+  return hitp;
 }
 
+function hitPlayer(laser, startx, starty, endx, endy){
+  
+  for(var i = 0; i < players.length; i++){
+    var p = players[i];
+    if(laser.playerNum != i+1){
+    if(laser.x < (p.x + p.radius) && (laser.x + laser.dx) > (p.x - p.radius)
+          && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
+      return i+1;
+    }
+  }
+  }
+ return -1;
 
+}
 
 function getMousePos(canvas, event) {
   
