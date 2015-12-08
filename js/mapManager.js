@@ -31,7 +31,7 @@ var currentCanvas;
 var img = new Image();
 
 img.onload = function() {
-  ctxboard.drawImage(img, 0, 0, 4000, 4000);
+  ctx.drawImage(img, 0, 0, 4000, 4000);
   createPlayer(p1);
   createPlayer(p2);
   createPlayer(p3);
@@ -75,7 +75,6 @@ socket.on('kill', function(data) {
     clearInterval(currentCanvas);
   }else{
       players[data.pkld-1] = null;
-    //players.splice(data.pkld-1, 1);
   }
   // else remove which ever player it is. 
 });
@@ -135,7 +134,6 @@ function playGame(){
       p = p4; 
     }
 });
-  //});
 
   socket.on('allplayers', function(players){
     if(players[0]==1) {
@@ -243,15 +241,6 @@ canvas.addEventListener('mousedown', function(event){
     
     socket.emit('movement',{ pid: pnum, x: p.x, y: p.y, sx: p.sx, sy:p.sy});
 
-    //AYAYAYAY
-     /* if (player shoots) {
-      //check kill 
-      if (kill) {
-        socket.emit('kill', {pkld: playerThatGotKilled, pklr : playerThatKilled}); 
-      }
-    }
-    
-    */
     for(var i = 0; i < players.length; i++){
       if(players[i] != null)
         createPlayer(players[i]);
@@ -316,25 +305,19 @@ function updateLazers(){
 
     switch(lazerHit){
       case 1:
-       //console.log('lazer case 1');
         lazr.dx = -lazr.dx;
         drawLazer(lazr);
         break; 
 
       case 2:
-      //console.log('lazer case 2');
         lazr.dy = -lazr.dy;
         drawLazer(lazr);
         break;
       case 3:
-      //console.log('lazer case 3');
         lazers.splice(i, 1);
         i--;
         break;
       case 4:
-       //console.log('player that was killed' + pidkill);
-        //console.log('player that killed ' + lazr.playerNum);
-        //console.log(pidkill);
         lazers.splice(i, 1);
         socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
         i--;
@@ -395,7 +378,7 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var h = Math.abs(starty - endy);*/
 
   var hitp = -1;
-  var imgd1 = ctx.getImageData(startx-9, starty-9, 15, 15);
+  var imgd1 = ctx.getImageData(startx-2, starty-2, 5, 5);
   var pix1 = imgd1.data;
   for (var i = 0; n = pix1.length, i < n; i += 4) {     
       if(pix1[i] == 0 || pix1[i] == 1){
@@ -458,18 +441,14 @@ function hitPlayer(laser, startx, starty, endx, endy){
   for(var i = 0; i < players.length; i++){
     var p = players[i];
     if(laser.playerNum != i+1 && p != null){
-    if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
-          && laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)){
-      //console.log("shooost1" + (i+1));
+    if(endx < (p.x + p.radius) && endx > (p.x - p.radius)
+          && endy< (p.y + p.radius) && endy > (p.y - p.radius)){
       return (i+1);
-    }else if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
-          && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
-            //console.log("shooost2" + (i+1));
-
+    }else if(endx < (p.x + p.radius) && endx > (p.x - p.radius)
+          && endy-10 < (p.y + p.radius) && endy+10 > (p.y-p.radius)){
       return (i+1);
-    }else if(laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)
-          && laser.x-10 < (p.x + p.radius) && laser.x+10 > (p.x-p.radius)){
-            //console.log("shooost3" + (i+1));
+    }else if(endy < (p.y + p.radius) && endy > (p.y - p.radius)
+          && endx-10 < (p.x + p.radius) && endx+10 > (p.x-p.radius)){
 
       return (i+1);
     }
