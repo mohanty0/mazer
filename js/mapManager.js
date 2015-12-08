@@ -45,7 +45,7 @@ socket.on('lazerAdd', function(data) {
     lazers.push(data.lazer)
 });
 
-socket.on('newPlayer', function(data) {
+socket.on('newplayer', function(data) {
   
    switch (data) {
       case 1:
