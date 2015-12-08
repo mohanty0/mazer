@@ -69,7 +69,7 @@ canvas.addEventListener('mousedown', function(event){
   var dy = 0;
 
   var maxx = 48;
-  var minn = -48
+  var minn = -48;
 
 
   currentCanvas = setInterval(drawBoard, 10);
@@ -173,6 +173,7 @@ canvas.addEventListener('mousedown', function(event){
 
       }
     }
+    //AYAYAYAY
      /* if (player shoots) {
       //check kill 
       if (kill) {
@@ -213,7 +214,8 @@ function Lazer(p){
   this.y = p.y+p.sy;
   this.dx = p.sx;
   this.dy = p.sy;
-  this.bounce = 1; 
+  this.bounce = 1;
+  this.playerNum = pnum; 
 }
 
 function createPlayer(p){
@@ -310,12 +312,13 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var maxy = Math.max(starty, endy);
   var w = Math.abs(startx - endx);
   var h = Math.abs(starty - endy);
-  var imgd = ctx.getImageData(minx, maxy, w, 1);
+  var imgd = ctx.getImageData(minx, maxy-25, w, 1);
   var pix = imgd.data;
   var imgd1 = ctx.getImageData(maxx, miny, 1, h);
   var pix1 = imgd1.data;
   for (var i = 0; n = pix.length, i < n; i += 4) {
     if (pix[i] == 0 || pix[i] == 1) {
+      
       if(lazer.bounce == 0){
         lazerHit = 3;
         break;
