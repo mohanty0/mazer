@@ -33,7 +33,7 @@ img.src = "/images/gameboard.jpg";
 
 function playGame(){
   var p; 
-  console.log('poop');
+  //console.log('poop');
   socket.emit('register', 1);
   socket.on('register' , function(num){
     pnum=num;
@@ -51,6 +51,20 @@ function playGame(){
       default: 
         p = p4; 
     }
+  });
+
+  socket.on('allplayers', function(players){
+    console.log('poop');
+    if(players[0]==1) {
+        $("#redp").removeClass("fa-circle-thin").addClass("fa-circle");
+
+      }if (players[1]==1) {
+        $("#greenp").removeClass("fa-circle-thin").addClass("fa-circle");
+      } if (players[2]==1) {
+        $("#bluep").removeClass("fa-circle-thin").addClass("fa-circle");
+      } if (players[3]==1) {
+        $("#yellowp").removeClass("fa-circle-thin").addClass("fa-circle");
+      }
   });
   
   canvas.addEventListener('mousemove', function(event){
@@ -74,7 +88,7 @@ canvas.addEventListener('mousedown', function(event){
   var minn = -48;
 
 
-  currentCanvas = setInterval(drawBoard, 10);
+  currentCanvas = setInterval(drawBoard, 20);
   
   function drawBoard(){
     ctx.drawImage(img, 0, 0, 4000, 4000);
