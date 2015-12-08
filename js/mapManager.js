@@ -40,26 +40,78 @@ img.onload = function() {
 
 img.src = "/images/gameboard.jpg";
 
+socket.on('lazerAdd', function(data) {
+  console.log("lazer");
+  if(data.lazer.playerNum != pnum)
+    lazers.push(data.lazer)
+});
+
+socket.on('kill', function(data) {
+  //if data.pkld is self, end game
+  if(data.pkld == pnum){
+    clearInterval(currentCanvas);
+  }else{
+    players.splice(data.pkld-1, 1);
+  }
+  // else remove which ever player it is. 
+});
+
+socket.on('movement', function(data) {
+
+    if(data.pid != pnum){
+
+    switch (data.pid) {
+      case 1:
+        p1.x=data.x;
+        p1.y=data.y;
+        p1.sx=data.sx;
+        p1.sy=data.sy;
+        break;
+      case 2: 
+        p2.x=data.x;
+        p2.y=data.y;
+        p2.sx=data.sx;
+        p2.sy=data.sy;
+        break;
+      case 3: 
+        p3.x=data.x;
+        p3.y=data.y;
+        p3.sx=data.sx;
+        p3.sy=data.sy;
+        break;
+      case 4: 
+        p4.x=data.x;
+        p4.y=data.y;
+        p4.sx=data.sx;
+        p4.sy=data.sy;
+        break;
+
+    }
+  }
+
+  });
 function playGame(){
   var p; 
+
   socket.emit('register', 1);
   socket.on('register' , function(num){
-    pnum=num;
-    console.log(num);
-    switch (num) {
-      case 1:
-        p = p1; 
-        break; 
-      case 2: 
-        p = p2; 
-        break; 
-      case 3:
-        p = p3;
-        break; 
-      default: 
-        p = p4; 
+  pnum=num;
+  console.log(num);
+  switch (num) {
+    case 1:
+      p = p1; 
+      break; 
+    case 2: 
+      p = p2; 
+      break; 
+    case 3:
+      p = p3;
+      break; 
+    default: 
+      p = p4; 
     }
-  });
+});
+  //});
 
   socket.on('allplayers', function(players){
     console.log('poop');
@@ -165,54 +217,8 @@ canvas.addEventListener('mousedown', function(event){
     p.sx = lx;
     p.sy = ly;
 
-     socket.on('lazerAdd', function(data) {
-      if(data.lazer.playerNum != pnum)
-        lazers.push(data.lazer)
-    });
-     socket.on('kill', function(data) {
-      //if data.pkld is self, end game
-      if(data.pkld == pnum){
-        clearInterval(currentCanvas);
-      }else{
-        players.splice(data.pkld-1, 1);
-      }
-      // else remove which ever player it is. 
-    });
+    
     socket.emit('movement',{ pid: pnum, x: p.x, y: p.y, sx: p.sx, sy:p.sy});
-
-    socket.on('movement', function(data) {
-
-      if(data.pid != pnum){
-
-      switch (data.pid) {
-        case 1:
-          p1.x=data.x;
-          p1.y=data.y;
-          p1.sx=data.sx;
-          p1.sy=data.sy;
-          break;
-        case 2: 
-          p2.x=data.x;
-          p2.y=data.y;
-          p2.sx=data.sx;
-          p2.sy=data.sy;
-          break;
-        case 3: 
-          p3.x=data.x;
-          p3.y=data.y;
-          p3.sx=data.sx;
-          p3.sy=data.sy;
-          break;
-        case 4: 
-          p4.x=data.x;
-          p4.y=data.y;
-          p4.sx=data.sx;
-          p4.sy=data.sy;
-          break;
-
-      }
-    }
-
 
     //AYAYAYAY
      /* if (player shoots) {
@@ -223,7 +229,6 @@ canvas.addEventListener('mousedown', function(event){
     }
     
     */
-    });
     for(var i = 0; i < players.length; i++){
       createPlayer(players[i]);
     }
@@ -300,6 +305,7 @@ function updateLazers(){
         i--;
         break;
       case 4:
+        console.log(pidkill);
         socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
         lazers.splice(i, 1);
         i--;
@@ -408,6 +414,9 @@ function hitPlayer(laser, startx, starty, endx, endy){
     if(laser.playerNum != i+1){
     if(laser.x < (p.x + p.radius) && (laser.x + laser.dx) > (p.x - p.radius)
           && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
+      return i+1;
+    }else if(laser.y < (p.y + p.radius) && (laser.y + laser.dy) > (p.y - p.radius)
+          && laser.x-10 < (p.x + p.radius) && laser.x+10 > (p.x-p.radius)){
       return i+1;
     }
   }
