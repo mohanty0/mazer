@@ -47,10 +47,13 @@ socket.on('lazerAdd', function(data) {
 
 socket.on('kill', function(data) {
   //if data.pkld is self, end game
+  console.log(data.pkld);
   if(data.pkld == pnum){
     clearInterval(currentCanvas);
   }else{
-    players.splice(data.pkld-1, 1);
+      console.log("HERERERE" + data.pkld);
+      players[data.pkld-1] = null;
+    //players.splice(data.pkld-1, 1);
   }
   // else remove which ever player it is. 
 });
@@ -229,7 +232,8 @@ canvas.addEventListener('mousedown', function(event){
     
     */
     for(var i = 0; i < players.length; i++){
-      createPlayer(players[i]);
+      if(players[i] != null)
+        createPlayer(players[i]);
     }
     updateLazers();
     mouseMove = false;
@@ -252,8 +256,8 @@ function Player(x, y, sx, sy, color) {
 function Lazer(p){
   
   this.len = 30;
-  this.x = p.x+(p.sx*0.2);
-  this.y = p.y+(p.sy*0.2);
+  this.x = p.x+(p.sx*0.1);
+  this.y = p.y+(p.sy*0.1);
   this.dx = 2*p.sx;
   this.dy = 2*p.sy;
   this.bounce = 1;
@@ -370,21 +374,33 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var h = Math.abs(starty - endy);*/
 
   var hitp = -1;
-
-  var imgd = ctx.getImageData(endx-15, endy-15, 20, 20);
-  var imgd1 = ctx.getImageData(startx-15, starty-15, 20, 20);
-  var pix = imgd.data;
+  var imgd1 = ctx.getImageData(startx-9, starty-9, 15, 15);
   var pix1 = imgd1.data;
-  /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
-  var pix1 = imgd1.data;*/
-  var j = 0;
-  for (var i = 0; n = pix.length, i < n; i += 4) {
-    if (pix[i] == 0 || pix[i] == 1 || pix1[j] == 0 || pix1[j] == 1){
+  for (var i = 0; n = pix1.length, i < n; i += 4) {     
+      if(pix1[i] == 0 || pix1[i] == 1){
       lazerHit = 3;
       break; 
     }
-    if(j < pix1.length)
-      j+=4;
+  }
+  hitp = hitPlayer(lazer, startx, starty, endx, endy);
+  if(hitp > 0 && lazerHit == 0){
+    lazerHit = 4;
+  }else{
+
+  var imgd = ctx.getImageData(endx-8, endy-8, 15, 15);
+  var pix = imgd.data;
+  
+  /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
+  var pix1 = imgd1.data;*/
+  //var j = 0;
+  for (var i = 0; n = pix.length, i < n; i += 4) {
+    if (pix[i] == 0 || pix[i] == 1){
+      lazerHit = 3;
+      break; 
+    }
+  }
+    //if(j < pix1.length)
+     // j+=4;
         /*if(lazer.bounce == 0){
           lazerHit = 3;
           break;
@@ -410,10 +426,9 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
       }*/
    // }
   }
-  hitp = hitPlayer(lazer, startx, starty, endx, endy);
-  if(hitp > 0 && lazerHit == 0){
-    lazerHit = 4;
-  }
+  /*if(lazerHit != 0){
+    console.log("WALLLLL");
+  }*/
   return hitp;
 }
 
