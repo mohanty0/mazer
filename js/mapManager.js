@@ -94,6 +94,7 @@ function playGame(){
 
   socket.emit('register', 1);
   socket.on('register' , function(num){
+    console.log('you are player '+num);
   pnum=num;
   console.log(num);
   switch (num) {
@@ -290,19 +291,24 @@ function updateLazers(){
 
     switch(lazerHit){
       case 1:
+       console.log('lazer case 1');
         lazr.dx = -lazr.dx;
         drawLazer(lazr);
         break; 
 
       case 2:
+      console.log('lazer case 2');
         lazr.dy = -lazr.dy;
         drawLazer(lazr);
         break;
       case 3:
+      console.log('lazer case 3');
         lazers.splice(i, 1);
         i--;
         break;
       case 4:
+       console.log('player that was killed' + pidkill);
+        console.log('player that killed ' + lazr.playerNum);
         console.log(pidkill);
         lazers.splice(i, 1);
         socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
@@ -310,6 +316,7 @@ function updateLazers(){
         break;
 
       default:
+      console.log('lazer default case');
         drawLazer(lazr);
         break;  
     }

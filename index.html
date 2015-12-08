@@ -34,17 +34,8 @@
     	
     	
     	/*
-    	socket.on('newplayer', function(plnum){
-    		if(plnum==1) {
-    			$("#redp").removeClass("fa-circle-thin").addClass("fa-circle");
-    		} else if(plnum==2) {
-    			$("#greenp").removeClass("fa-circle-thin").addClass("fa-circle");
-    		} else if(plnum==3) {
-    			$("#bluep").removeClass("fa-circle-thin").addClass("fa-circle");
-    		} else if(plnum==4) {
-    			$("#yellowp").removeClass("fa-circle-thin").addClass("fa-circle");
-    		}
-    	});*/
+    	*/
+		var socket = io();
     	socket.on('kill', function(data){
     		if(data.pkld==1) {
     			$("#redp").removeClass("fa-circle").addClass("fa-times-circle");
@@ -60,6 +51,17 @@
     		}
 
        	});
+       	socket.on('newplayer', function(plnum){
+    		if(plnum==1) {
+    			$("#redp").removeClass("fa-circle-thin").addClass("fa-circle");
+    		} else if(plnum==2) {
+    			$("#greenp").removeClass("fa-circle-thin").addClass("fa-circle");
+    		} else if(plnum==3) {
+    			$("#bluep").removeClass("fa-circle-thin").addClass("fa-circle");
+    		} else if(plnum==4) {
+    			$("#yellowp").removeClass("fa-circle-thin").addClass("fa-circle");
+    		}
+    	});
      </script> 
 </body>
 </html>
