@@ -1,3 +1,7 @@
+//var canvasboard = document.getElementById('gameboard');
+//var ctxboard = gameboard.getContext("2d");
+
+
 var canvas = document.getElementById('game');
 var ctx = game.getContext("2d");
 var pColor = 'black'
@@ -27,7 +31,7 @@ var currentCanvas;
 var img = new Image();
 
 img.onload = function() {
-  ctx.drawImage(img, 0, 0, 4000, 4000);
+  ctxboard.drawImage(img, 0, 0, 4000, 4000);
   createPlayer(p1);
   createPlayer(p2);
   createPlayer(p3);
@@ -147,6 +151,8 @@ canvas.addEventListener('mousedown', function(event){
   currentCanvas = setInterval(drawBoard, 20);
   
   function drawBoard(){
+    ctx.clearRect(0,0, 4000, 4000);
+
     ctx.drawImage(img, 0, 0, 4000, 4000);
     
     
