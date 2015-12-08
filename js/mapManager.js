@@ -51,7 +51,7 @@ socket.on('kill', function(data) {
     clearInterval(currentCanvas);
   }else{
     //players.splice(data.pkld-1, 1);
-    players[pkld-1] = null;
+    players[data.pkld-1] = null;
   }
   // else remove which ever player it is. 
 });
