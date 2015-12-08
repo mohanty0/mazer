@@ -26,7 +26,6 @@ io.on('connection', function(socket){
       players[0]=1;
       psocks[0]= socket.id; 
       io.to(socket.id).emit('register' , 1);
-      io.emit('newplayer',1);
       io.emit('allplayers', players);
     }
     else if(players[1]==0) {
@@ -34,7 +33,6 @@ io.on('connection', function(socket){
       players[1]=1;
       psocks[1]= socket.id; 
       io.to(socket.id).emit('register' , 2);
-      io.emit('newplayer',2);
       io.emit('allplayers', players);
     }
     else if(players[2]==0) {
@@ -42,7 +40,6 @@ io.on('connection', function(socket){
      players[2]=1;
       psocks[2]= socket.id; 
       io.to(socket.id).emit('register' , 3);
-      io.emit('newplayer',3);
       io.emit('allplayers', players);
     }
     else if(players[3]==0) {
@@ -50,7 +47,6 @@ io.on('connection', function(socket){
       players[3]=1;
       psocks[3]= socket.id; 
       io.to(socket.id).emit('register' , 4);
-      io.emit('newplayer',4);
       io.emit('allplayers', players);
     }
   });
@@ -65,6 +61,7 @@ io.on('connection', function(socket){
 
   socket.on('kill', function(data) {
     //data should contain two fields pkld, and pklr
+    console.log( data.pkld+' has been killed');
     var pkilled = data.pkld-1; 
     players[pkilled]=0; 
     io.emit('kill', data);
