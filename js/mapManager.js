@@ -50,8 +50,7 @@ socket.on('kill', function(data) {
   if(data.pkld == pnum){
     clearInterval(currentCanvas);
   }else{
-    //players.splice(data.pkld-1, 1);
-    players[data.pkld-1] = null;
+    players.splice(data.pkld-1, 1);
   }
   // else remove which ever player it is. 
 });
@@ -229,8 +228,7 @@ canvas.addEventListener('mousedown', function(event){
     
     */
     for(var i = 0; i < players.length; i++){
-      if(players[i] != null)
-        createPlayer(players[i]);
+      createPlayer(players[i]);
     }
     updateLazers();
     mouseMove = false;
@@ -306,8 +304,8 @@ function updateLazers(){
         break;
       case 4:
         console.log(pidkill);
-        socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
         lazers.splice(i, 1);
+        socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
         i--;
         break;
 
@@ -419,18 +417,18 @@ function hitPlayer(laser, startx, starty, endx, endy){
     if(laser.playerNum != i+1){
     if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
           && laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)){
-      console.log("shooost1" + i+1);
-      return i+1;
+      console.log("shooost1" + (i+1));
+      return (i+1);
     }else if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
           && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
-            console.log("shooost2" + i+1);
+            console.log("shooost2" + (i+1));
 
-      return i+1;
+      return (i+1);
     }else if(laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)
           && laser.x-10 < (p.x + p.radius) && laser.x+10 > (p.x-p.radius)){
-            console.log("shooost3" + i+1);
+            console.log("shooost3" + (i+1));
 
-      return i+1;
+      return (i+1);
     }
   }
   }
