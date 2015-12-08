@@ -3,14 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var p1 = 0; 
-var p1sock; 
-var p2 = 0; 
-var p2sock; 
-var p3 = 0; 
-var p3sock; 
-var p4 = 0; 
-var p4sock; 
+
 var players = [0,0,0,0];
 var psocks = new Array(4);
 
