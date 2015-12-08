@@ -303,13 +303,16 @@ function createPlayer(p){
 function updateLazers(){
   for(var i = 0; i < lazers.length; i++){
     var lazr = lazers[i];
+    
+    var pidkill = -1;
+    
+    pidkill = checkLazerCollision(lazr, lazr.x, lazr.y, lazr.x + lazr.dx, lazr.y + lazr.dy)
     lazr.x += (lazr.dx);
     lazr.y += (lazr.dy);
-    var pidkill = -1;
-    pidkill = checkLazerCollision(lazr, lazr.x, lazr.y, lazr.x + lazr.dx, lazr.y + lazr.dy)
-    
     if(lazr.x < 0 || lazr.y < 0 || lazr.x > 4000 || lazr.y > 4000)
       lazerHit = 2;
+
+
 
     switch(lazerHit){
       case 1:
@@ -322,12 +325,16 @@ function updateLazers(){
         drawLazer(lazr);
         break;
       case 3:
+        //drawLazer(lazr);
+
         lazers.splice(i, 1);
         i--;
         break;
       case 4:
-        lazers.splice(i, 1);
+        //
+        drawLazer(lazr);
         socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
+        lazers.splice(i, 1);
         i--;
         break;
 
@@ -455,17 +462,17 @@ function hitPlayer(laser, startx, starty, endx, endy){
   for(var i = 0; i < players.length; i++){
     var p = players[i];
     if(laser.playerNum != i+1 && p != null){
-    if(endx < (p.x + p.radius) && endx > (p.x - p.radius)
-          && endy< (p.y + p.radius) && endy > (p.y - p.radius)){
+    if(endx < (p.x + 40) && endx > (p.x - 40)
+          && endy< (p.y + 40) && endy > (p.y - 40)){
       return (i+1);
-    }else if(endx < (p.x + p.radius) && endx > (p.x - p.radius)
+    }/*else if(endx < (p.x + p.radius) && endx > (p.x - p.radius)
           && endy-10 < (p.y + p.radius) && endy+10 > (p.y-p.radius)){
       return (i+1);
     }else if(endy < (p.y + p.radius) && endy > (p.y - p.radius)
           && endx-10 < (p.x + p.radius) && endx+10 > (p.x-p.radius)){
 
       return (i+1);
-    }
+    }*/
   }
   }
  return -1;
