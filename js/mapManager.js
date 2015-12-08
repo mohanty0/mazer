@@ -72,11 +72,21 @@ socket.on('kill', function(data) {
   //if data.pkld is self, end game
   if(data.pkld == pnum){
     clearInterval(currentCanvas);
+    eliminated(players[pnum-1].x, players[pnum-1].y);
   }else{
       players[data.pkld-1] = null;
   }
   // else remove which ever player it is. 
 });
+
+function eliminated(x,y){
+  ctx.font = "40px BankFuturistic";
+  ctx.fillStyle = '#FF8000';
+  ctx.fillText("Eliminated" ,x-100, y - 20);
+  ctx.font = "40px BankFuturistic";
+  ctx.fillStyle = '#FF8000';
+  ctx.fillText("Refresh To Continue The Fight!",x -270, y + 40);
+}
 
 socket.on('movement', function(data) {
 
