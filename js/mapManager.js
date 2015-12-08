@@ -41,7 +41,6 @@ img.onload = function() {
 img.src = "/images/gameboard.jpg";
 
 socket.on('lazerAdd', function(data) {
-  console.log("lazer");
   if(data.lazer.playerNum != pnum)
     lazers.push(data.lazer)
 });
@@ -51,7 +50,8 @@ socket.on('kill', function(data) {
   if(data.pkld == pnum){
     clearInterval(currentCanvas);
   }else{
-    players.splice(data.pkld-1, 1);
+    //players.splice(data.pkld-1, 1);
+    players[pkld-1] = null;
   }
   // else remove which ever player it is. 
 });
@@ -135,7 +135,7 @@ canvas.addEventListener('mousedown', function(event){
     if(p.ammo > 0){
       var ltemp = createLazer(p);
       lazers.push(ltemp);
-      socket.emit('lazerAdd', {lazer:ltemp});
+      socket.emit('lazer', {lazer:ltemp});
       p.ammo--;
     }
   }, false);
@@ -229,7 +229,8 @@ canvas.addEventListener('mousedown', function(event){
     
     */
     for(var i = 0; i < players.length; i++){
-      createPlayer(players[i]);
+      if(players[i] != null)
+        createPlayer(players[i]);
     }
     updateLazers();
     mouseMove = false;
@@ -363,17 +364,17 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var w = Math.abs(startx - endx);
   var h = Math.abs(starty - endy);*/
 
-  var hitp;
+  var hitp = -1;
 
-  var imgd = ctx.getImageData(endx-10, endy-10, 15, 15);
-  var imgd1 = ctx.getImageData(startx-10, starty-10, 15, 15);
+  var imgd = ctx.getImageData(endx-15, endy-15, 20, 20);
+  var imgd1 = ctx.getImageData(startx-15, starty-15, 20, 20);
   var pix = imgd.data;
   var pix1 = imgd1.data;
   /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
   var pix1 = imgd1.data;*/
   var j = 0;
   for (var i = 0; n = pix.length, i < n; i += 4) {
-    if (pix[i] == 0 || pix[i] == 1 || pix1[j] == 0 || pix1[j] == 1) {
+    if (pix[i] == 0 || pix[i] == 1 || pix1[j] == 0 || pix1[j] == 1){
       lazerHit = 3;
       break; 
     }
@@ -416,11 +417,19 @@ function hitPlayer(laser, startx, starty, endx, endy){
   for(var i = 0; i < players.length; i++){
     var p = players[i];
     if(laser.playerNum != i+1){
-    if(laser.x < (p.x + p.radius) && (laser.x + laser.dx) > (p.x - p.radius)
-          && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
+    if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
+          && laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)){
+      console.log("shooost1" + i+1);
       return i+1;
-    }else if(laser.y < (p.y + p.radius) && (laser.y + laser.dy) > (p.y - p.radius)
+    }else if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
+          && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
+            console.log("shooost2" + i+1);
+
+      return i+1;
+    }else if(laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)
           && laser.x-10 < (p.x + p.radius) && laser.x+10 > (p.x-p.radius)){
+            console.log("shooost3" + i+1);
+
       return i+1;
     }
   }
