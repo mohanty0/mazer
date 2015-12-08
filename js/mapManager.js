@@ -46,24 +46,19 @@ socket.on('lazerAdd', function(data) {
 });
 
 socket.on('newplayer', function(data) {
-   var ndata = data-1;
-   switch (ndata) {
+ //  var ndata = data-1;
+   switch (data) {
       case 1:
-        p1 = new Player(75,75, 0, 45, '#FF0000');
-        players[ndata] = p1;
-
+        players[data-1] = p1;
         break;
       case 2: 
-        p2 = new Player(3925,3925, 0, -45, '#00FF00');
-        players[ndata] = p2;
+        players[data-1] = p2;
         break;
       case 3: 
-        p3 = new Player(3925,75, -45, 0, '#0000FF');
-        players[ndata] = p3;
+        players[data-1] = p3;
         break;
       case 4: 
-        p4 = new Player(75,3925, 45, 0, '#FFFF00');
-        players[ndata] = p4;
+        players[data-1] = p4;
         break;
 
     }
