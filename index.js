@@ -65,6 +65,7 @@ io.on('connection', function(socket){
 
   socket.on('kill', function(data) {
     //data should contain two fields pkld, and pklr
+    console.log('player ' + data.pklr + ' killed ' + data.pkld);
     var pkilled = data.pkld-1; 
     players[pkilled]=0; 
     io.emit('kill', data);
