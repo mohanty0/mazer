@@ -15,6 +15,10 @@ players.push(p2);
 players.push(p3);
 players.push(p4);
 var lazers = [];
+
+var initWidth=(window.innerWidth)/2;
+var initHeight=window.innerHeight/2;
+
 console.log(players[0].x);
 
 var pnum;
@@ -288,7 +292,6 @@ function createPlayer(p){
 
 function updateLazers(){
   for(var i = 0; i < lazers.length; i++){
-    
     var lazr = lazers[i];
     lazr.x += (lazr.dx);
     lazr.y += (lazr.dy);
@@ -328,12 +331,18 @@ function updateLazers(){
 }
 
 function drawLazer(lazr){
-  ctx.beginPath();
-  ctx.moveTo(lazr.x, lazr.y);
-  ctx.lineTo(lazr.x + lazr.dx, lazr.y + lazr.dy);
-  ctx.lineWidth = 5;
-  ctx.strokeStyle='#FF00FF';
-  ctx.stroke();
+  var posx = players[pnum-1].x;
+  var posy = players[pnum-1].y;
+  //Control lazers, only load for user's window - All else still calculated
+  if(lazr.x <= (posx + initWidth) && lazr.x >= (posx - initWidth) 
+      && lazr.y <= (posy + initHeight) && lazr.y >= (posx - initHeight)){
+    ctx.beginPath();
+    ctx.moveTo(lazr.x, lazr.y);
+    ctx.lineTo(lazr.x + lazr.dx, lazr.y + lazr.dy);
+    ctx.lineWidth = 5;
+    ctx.strokeStyle='#FF00FF';
+    ctx.stroke();
+  }
 }
 
 function createLazer(p){
