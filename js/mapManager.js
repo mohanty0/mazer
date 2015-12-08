@@ -190,6 +190,7 @@ canvas.addEventListener('mousedown', function(event){
     createPlayer(p2);
     createPlayer(p3);
     createPlayer(p4);
+    updateLazers();
     mouseMove = false;
   }
 }
@@ -212,8 +213,8 @@ function Lazer(p){
   this.len = 30;
   this.x = p.x+p.sx;
   this.y = p.y+p.sy;
-  this.dx = p.sx;
-  this.dy = p.sy;
+  this.dx = 2*p.sx;
+  this.dy = 2*p.sy;
   this.bounce = 1;
   this.playerNum = pnum; 
 }
@@ -233,10 +234,11 @@ function createPlayer(p){
   ctx.strokeStyle = '#C6C6C6';
   ctx.stroke();
   ctx.closePath();
+}
 
+function updateLazers(){
   for(var i = 0; i < lazers.length; i++){
     
-
     var lazr = lazers[i];
     lazr.x += (lazr.dx);
     lazr.y += (lazr.dy);
@@ -306,20 +308,24 @@ function checkcollision(p, x, y) {
 }
 
 function checkLazerCollision(lazer, startx, starty, endx, endy) {
-  var minx = Math.min(startx, endx);
+  /*var minx = Math.min(startx, endx);
   var miny = Math.min(starty, endy);
   var maxx = Math.max(startx, endx);
   var maxy = Math.max(starty, endy);
   var w = Math.abs(startx - endx);
-  var h = Math.abs(starty - endy);
-  var imgd = ctx.getImageData(minx, maxy-25, w, 1);
+  var h = Math.abs(starty - endy);*/
+
+
+
+  var imgd = ctx.getImageData(endx-4, endy-4, 5, 5);
   var pix = imgd.data;
-  var imgd1 = ctx.getImageData(maxx, miny, 1, h);
-  var pix1 = imgd1.data;
+  /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
+  var pix1 = imgd1.data;*/
   for (var i = 0; n = pix.length, i < n; i += 4) {
     if (pix[i] == 0 || pix[i] == 1) {
-      
-      if(lazer.bounce == 0){
+      lazerHit = 3;
+      break; 
+      /*if(lazer.bounce == 0){
         lazerHit = 3;
         break;
       }else{
@@ -341,7 +347,7 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
         lazer.bounce--;
         break;
       }
-    }
+    }*/
   }
   }
 }
