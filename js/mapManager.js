@@ -141,6 +141,10 @@ canvas.addEventListener('mousedown', function(event){
     p.sx = lx;
     p.sy = ly;
 
+     socket.on('lazerAdd', function(data) {
+      if(data.lazer.playerNum != pnum)
+        lazers.push(data.lazer)
+    });
     socket.emit('movement',{ pid: pnum, x: p.x, y: p.y, sx: p.sx, sy:p.sy});
 
     socket.on('movement', function(data) {
@@ -176,10 +180,7 @@ canvas.addEventListener('mousedown', function(event){
       }
     }
 
-    socket.on('lazerAdd', function(data) {
-      if(data.lazer.playerNum != pnum)
-        lazers.push(data.lazer)
-    }
+
     //AYAYAYAY
      /* if (player shoots) {
       //check kill 
