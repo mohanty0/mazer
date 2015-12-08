@@ -47,11 +47,9 @@ socket.on('lazerAdd', function(data) {
 
 socket.on('kill', function(data) {
   //if data.pkld is self, end game
-  console.log(data.pkld);
   if(data.pkld == pnum){
     clearInterval(currentCanvas);
   }else{
-      console.log("HERERERE" + data.pkld);
       players[data.pkld-1] = null;
     //players.splice(data.pkld-1, 1);
   }
@@ -97,7 +95,6 @@ function playGame(){
 
   socket.emit('register', 1);
   socket.on('register' , function(num){
-    console.log('you are player '+num);
   pnum=num;
   console.log(num);
   switch (num) {
@@ -295,32 +292,32 @@ function updateLazers(){
 
     switch(lazerHit){
       case 1:
-       console.log('lazer case 1');
+       //console.log('lazer case 1');
         lazr.dx = -lazr.dx;
         drawLazer(lazr);
         break; 
 
       case 2:
-      console.log('lazer case 2');
+      //console.log('lazer case 2');
         lazr.dy = -lazr.dy;
         drawLazer(lazr);
         break;
       case 3:
-      console.log('lazer case 3');
+      //console.log('lazer case 3');
         lazers.splice(i, 1);
         i--;
         break;
       case 4:
-       console.log('player that was killed' + pidkill);
-        console.log('player that killed ' + lazr.playerNum);
-        console.log(pidkill);
+       //console.log('player that was killed' + pidkill);
+        //console.log('player that killed ' + lazr.playerNum);
+        //console.log(pidkill);
         lazers.splice(i, 1);
         socket.emit('kill', {pkld: pidkill, pklr : lazr.playerNum}); 
         i--;
         break;
 
       default:
-      console.log('lazer default case');
+      //console.log('lazer default case');
         drawLazer(lazr);
         break;  
     }
@@ -436,19 +433,19 @@ function hitPlayer(laser, startx, starty, endx, endy){
   
   for(var i = 0; i < players.length; i++){
     var p = players[i];
-    if(laser.playerNum != i+1){
+    if(laser.playerNum != i+1 && p != null){
     if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
           && laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)){
-      console.log("shooost1" + (i+1));
+      //console.log("shooost1" + (i+1));
       return (i+1);
     }else if(laser.x < (p.x + p.radius) && (laser.x) > (p.x - p.radius)
           && laser.y-10 < (p.y + p.radius) && laser.y+10 > (p.y-p.radius)){
-            console.log("shooost2" + (i+1));
+            //console.log("shooost2" + (i+1));
 
       return (i+1);
     }else if(laser.y < (p.y + p.radius) && (laser.y) > (p.y - p.radius)
           && laser.x-10 < (p.x + p.radius) && laser.x+10 > (p.x-p.radius)){
-            console.log("shooost3" + (i+1));
+            //console.log("shooost3" + (i+1));
 
       return (i+1);
     }
