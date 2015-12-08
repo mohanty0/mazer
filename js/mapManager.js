@@ -114,7 +114,6 @@ function playGame(){
   //});
 
   socket.on('allplayers', function(players){
-    console.log('poop');
     if(players[0]==1) {
         $("#redp").removeClass("fa-circle-thin").addClass("fa-circle");
 
