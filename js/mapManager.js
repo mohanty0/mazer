@@ -45,6 +45,25 @@ socket.on('lazerAdd', function(data) {
     lazers.push(data.lazer)
 });
 
+socket.on('newPlayer', function(data) {
+  
+   switch (data) {
+      case 1:
+        players[data] = p1;
+        break;
+      case 2: 
+        players[data] = p2;
+        break;
+      case 3: 
+        players[data] = p3;
+        break;
+      case 4: 
+        players[data] = p4;
+        break;
+
+    }
+});
+
 socket.on('kill', function(data) {
   //if data.pkld is self, end game
   if(data.pkld == pnum){
