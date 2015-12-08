@@ -335,7 +335,7 @@ function drawLazer(lazr){
   var posy = players[pnum-1].y;
   //Control lazers, only load for user's window - All else still calculated
   if(lazr.x <= (posx + initWidth) && lazr.x >= (posx - initWidth) 
-      && lazr.y <= (posy + initHeight) && lazr.y >= (posx - initHeight)){
+      && lazr.y <= (posy + initHeight) && lazr.y >= (posy - initHeight)){
     ctx.beginPath();
     ctx.moveTo(lazr.x, lazr.y);
     ctx.lineTo(lazr.x + lazr.dx, lazr.y + lazr.dy);
