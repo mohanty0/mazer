@@ -74,15 +74,23 @@ io.on('connection', function(socket){
     if(psocks[0]==socket.id) {
       players[0]=0; 
       console.log('p1 left the game');
+      io.emit('kill', {pkld: 1, pklr: -1});
+      psocks[0]=null;
     } else if (psocks[1]==socket.id) {
-      players[0]=1; 
+      players[1]=0; 
       console.log('p2 left the game');
+      io.emit('kill', {pkld: 2, pklr: -1});
+      psocks[1]=null;
     } else if (psocks[2]==socket.id) {
-      players[0]=2; 
+      players[2]=0; 
       console.log('p3 left the game');
+      io.emit('kill', {pkld: 3, pklr: -1});
+      psocks[2]=null;
     } else if (psocks[3]==socket.id) {
-      players[0]=3; 
+      players[3]=0; 
       console.log('p4 left the game');
+      io.emit('kill', {pkld: 4, pklr: -1});
+      psocks[3]=null;
     }
   });
 });
