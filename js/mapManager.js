@@ -312,7 +312,7 @@ function updateLazers(){
     if(lazr.x < 0 || lazr.y < 0 || lazr.x > 4000 || lazr.y > 4000)
       lazerHit = 2;
 
-    console.log(lazerHit);
+
 
     switch(lazerHit){
       case 1:
@@ -399,16 +399,19 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var h = Math.abs(starty - endy);*/
 
   var hitp = -1;
-  /*var imgd1 = ctx.getImageData(startx, starty, 1, 1);
+  var imgd1 = ctx.getImageData(startx-2, starty-2, 5, 5);
   var pix1 = imgd1.data;
   for (var i = 0; n = pix1.length, i < n; i += 4) {     
       if(pix1[i] == 0 || pix1[i] == 1){
-        console.log(pix1[i]);  
-        console.log("errStart");
-        lazerHit = 3;
-        return hitp;
-      }
-  }*/
+      lazerHit = 3;
+      break; 
+    }
+  }
+  hitp = hitPlayer(lazer, startx, starty, endx, endy);
+  if(hitp > 0 && lazerHit == 0){
+    lazerHit = 4;
+  }else{
+
   var imgd = ctx.getImageData(endx-8, endy-8, 15, 15);
   var pix = imgd.data;
   
@@ -418,17 +421,9 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   for (var i = 0; n = pix.length, i < n; i += 4) {
     if (pix[i] == 0 || pix[i] == 1){
       lazerHit = 3;
-      console.log("errEnd");
-      return hitp;
+      break; 
     }
   }
-  hitp = hitPlayer(lazer, startx, starty, endx, endy);
-  if(hitp > 0 && lazerHit == 0){
-    lazerHit = 4;
-    return hitp;
-  }//else{
-
-  
     //if(j < pix1.length)
      // j+=4;
         /*if(lazer.bounce == 0){
@@ -455,7 +450,7 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
         }
       }*/
    // }
-  //}
+  }
   /*if(lazerHit != 0){
     console.log("WALLLLL");
   }*/
