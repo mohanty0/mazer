@@ -34,8 +34,11 @@ var lazerHit = 0;
 var currentCanvas;
 var img = new Image();
 
+var spaceControl = [];
+
 img.onload = function() {
   ctx.drawImage(img, 0, 0, 4000, 4000);
+  initSpace();
   createPlayer(p1);
   createPlayer(p2);
   createPlayer(p3);
@@ -86,6 +89,22 @@ function eliminated(x,y){
   ctx.font = "40px BankFuturistic";
   ctx.fillStyle = '#FF8000';
   ctx.fillText("Refresh To Continue The Fight!",x -270, y + 40);
+}
+
+function initSpace(){
+  var imgd = ctx.getImageData(0, 0, 4000, 4000);
+  var pix = imgd.data;
+  console.log(pix.length);
+  for (var i = 0; n = (pix.length), i < n; i += 4) {
+    
+    if (pix[i] == 0 || pix[i] == 1) {
+    
+      spaceControl[i/4] = true;
+    }else{
+      spaceControl[i/4] = false;
+    }
+  }
+
 }
 
 socket.on('movement', function(data) {
@@ -174,8 +193,8 @@ canvas.addEventListener('mousedown', function(event){
   var dx = 0;
   var dy = 0;
 
-  var maxx = 48;
-  var minn = -48;
+  var maxx = 38;
+  var minn = -38;
 
 
   currentCanvas = setInterval(drawBoard, 20);
@@ -199,8 +218,6 @@ canvas.addEventListener('mousedown', function(event){
     }
 
 
-    checkcollision(p , dx, dy);
-
     if(dx > maxx){
       dx = maxx;
     }else if(dx < minn){
@@ -211,6 +228,7 @@ canvas.addEventListener('mousedown', function(event){
     }else if(dy < minn){
       dy = minn;
     }
+    checkcollision(p , dx, dy);
 
     if(collision != 1){
       p.x += dx;
@@ -303,13 +321,13 @@ function createPlayer(p){
 function updateLazers(){
   for(var i = 0; i < lazers.length; i++){
     var lazr = lazers[i];
-    lazr.x += (lazr.dx);
-    lazr.y += (lazr.dy);
+
     var pidkill = -1;
     pidkill = checkLazerCollision(lazr, lazr.x, lazr.y, lazr.x + lazr.dx, lazr.y + lazr.dy)
-    
+    lazr.x += (lazr.dx);
+    lazr.y += (lazr.dy);    
     if(lazr.x < 0 || lazr.y < 0 || lazr.x > 4000 || lazr.y > 4000)
-      lazerHit = 2;
+      lazerHit = 3;
 
     switch(lazerHit){
       case 1:
@@ -332,7 +350,6 @@ function updateLazers(){
         break;
 
       default:
-      //console.log('lazer default case');
         drawLazer(lazr);
         break;  
     }
@@ -361,13 +378,37 @@ function createLazer(p){
 }
 
 function checkcollision(p, x, y) {
-  var imgd = ctx.getImageData(p.x+x-40, p.y+y-40, 80, 80);
-  var pix = imgd.data;
-  for (var i = 0; n = pix.length, i < n; i += 4) {
+  //var imgd = ctx.getImageData(p.x+x-40, p.y+y-40, 80, 80);
+  //var pix = imgd.data;
+
+  var nx =p.x + x-40;
+  var ny =p.y + y-40;
+  nx = Math.round(nx);
+  ny = Math.round(ny);
+  for(var i = ny; n = (ny+80), i < n; i++){
+      for(var j = nx; t = (nx+80), j < t; j++){
+        var temp = ((i*4000) + j);
+        if(spaceControl[temp]){
+          collision = 1;
+          //console.log(spaceControl[0]);
+          //console.log("YAYAYAYAYAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+          break;
+        }  
+      }
+      
+  }
+  if(collision == 0){
+    if(nx < 0 || ny < 0 || (nx+80) > 4000 || (ny+80) > 4000) collision = 1;
+  }
+  /*
+  if(collision == 0){
+
+  }
+  for (var i = x; n = pix.length, i < n; i += 4) {
     if (pix[i] == 0 || pix[i] == 1) {
       collision = 1;
-    }
-  }
+    }*/
+  //}
   /*console.log("here1");
   for(var i = 0; i < 360; i++){
     x = p.x+x + p.radius * Math.cos(i*(Math.PI/180));
@@ -390,33 +431,56 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   var maxy = Math.max(starty, endy);
   var w = Math.abs(startx - endx);
   var h = Math.abs(starty - endy);*/
+  startx = Math.round(startx);
+  starty = Math.round(starty);
+  endx = Math.round(endx);
+  endy = Math.round(endy);
+  midx = (Math.max(endx, startx) - Math.min(endx, startx))*0.5 +startx;
+  midy = (Math.max(endy, starty) - Math.min(endy, starty))*0.5 +starty;
 
   var hitp = -1;
   var imgd1 = ctx.getImageData(startx-2, starty-2, 5, 5);
   var pix1 = imgd1.data;
-  for (var i = 0; n = pix1.length, i < n; i += 4) {     
+  /*for (var i = 0; n = pix1.length, i < n; i += 4) {     
       if(pix1[i] == 0 || pix1[i] == 1){
       lazerHit = 3;
       break; 
     }
+  }*/
+  if(spaceControl[(starty * 4000) + startx]){
+    lazerHit = 3;
   }
   hitp = hitPlayer(lazer, startx, starty, endx, endy);
   if(hitp > 0 && lazerHit == 0){
     lazerHit = 4;
   }else{
 
-  var imgd = ctx.getImageData(endx-8, endy-8, 15, 15);
-  var pix = imgd.data;
+  //var imgd = ctx.getImageData(endx-8, endy-8, 15, 15);
+  //var pix = imgd.data;
   
   /*var imgd1 = ctx.getImageData(maxx, miny, 1, h);
   var pix1 = imgd1.data;*/
   //var j = 0;
-  for (var i = 0; n = pix.length, i < n; i += 4) {
-    if (pix[i] == 0 || pix[i] == 1){
-      lazerHit = 3;
-      break; 
+  for(var k = (endy -10); t = (endy+7), k < t; k++){
+    for (var i = (endx - 10); n = (endx+7), i < n; i ++) {
+      var temp = (k*4000) + i;
+      if (spaceControl[temp]){
+        lazerHit = 3;
+        break; 
+      }
     }
   }
+  for(var k = (midy -7); t = (endy+7), k < t; k++){
+    for (var i = (midx - 7); n = (endx+7), i < n; i ++) {
+      var temp = (k*4000) + i;
+      if (spaceControl[temp]){
+        lazerHit = 3;
+        break; 
+      }
+    }
+  }
+  
+
     //if(j < pix1.length)
      // j+=4;
         /*if(lazer.bounce == 0){
