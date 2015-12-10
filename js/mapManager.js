@@ -16,6 +16,9 @@ players.push(p3);
 players.push(p4);
 var lazers = [];
 
+var SCREENWIDTH = window.innerWidth;
+var SCREENHEIGHT = window.innerHeight;
+
 var initWidth=(window.innerWidth)/2;
 var initHeight=window.innerHeight/2;
 
@@ -438,9 +441,6 @@ function checkLazerCollision(lazer, startx, starty, endx, endy) {
   midx = (Math.max(endx, startx) - Math.min(endx, startx))*0.5 +startx;
   midy = (Math.max(endy, starty) - Math.min(endy, starty))*0.5 +starty;
 
-  var hitp = -1;
-  var imgd1 = ctx.getImageData(startx-2, starty-2, 5, 5);
-  var pix1 = imgd1.data;
   /*for (var i = 0; n = pix1.length, i < n; i += 4) {     
       if(pix1[i] == 0 || pix1[i] == 1){
       lazerHit = 3;
