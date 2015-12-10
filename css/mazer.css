@@ -5,3 +5,27 @@ body {
 i {
 	padding-left: 5px;
 }
+
+.scoreboard_small {
+	position: fixed; 
+	left: -29px; 
+	width: 150px; 
+	margin-top: -1.5%; 
+	background-color: rgba(50,50,50,0.6);
+}
+
+.scoreboard_large {
+	position: fixed; 
+	left: -29px; 
+	width: 280px; 
+	margin-top: -0.5%; 
+	background-color: rgba(50,50,50,0.6);	
+}
+
+#game {
+	width: 4000px; 
+	height: 4000px;
+	border: 50px 
+	solid #000; 
+	margin: 2000px 2000px 2000px 2000px;"
+}
